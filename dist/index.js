@@ -12476,9 +12476,9 @@ var DartAnalyzeLogTypeEnum;
 class DartAnalyzeLogType {
     static typeFromKey(key) {
         switch (key) {
-            case 'ERROR':
+            case 'error':
                 return DartAnalyzeLogTypeEnum.Error;
-            case 'WARNING':
+            case 'warning':
                 return DartAnalyzeLogTypeEnum.Warning;
             default:
                 return DartAnalyzeLogTypeEnum.Info;
@@ -12487,11 +12487,9 @@ class DartAnalyzeLogType {
     static keyFromType(logType) {
         switch (logType) {
             case DartAnalyzeLogTypeEnum.Error:
-                return 'ERROR';
-            case DartAnalyzeLogTypeEnum.Warning:
-                return 'WARNING';
+                return 'error';
             default:
-                return 'INFO';
+                return 'warning';
         }
     }
     static isFail(logType) {
@@ -12527,15 +12525,15 @@ const FailOn_1 = __nccwpck_require__(1613);
 const DartAnalyzeLogType_1 = __nccwpck_require__(5054);
 class ParsedLine {
     constructor(params) {
-        var _a;
+        var _a, _b;
         this.originalLine = params.line;
-        const lineData = params.line.split((_a = params === null || params === void 0 ? void 0 : params.delimiter) !== null && _a !== void 0 ? _a : '|');
+        const lineData = params.line.split((_a = params === null || params === void 0 ? void 0 : params.delimiter) !== null && _a !== void 0 ? _a : '-');
         this.type = DartAnalyzeLogType_1.DartAnalyzeLogType.typeFromKey(lineData[0].trim());
-        const lintMessage = lineData[7];
-        const file = lineData[3];
-        const lineNumber = lineData[4];
-        const columnNumber = lineData[5];
-        const lintName = lineData[2];
+        const lints = lineData[1].trim().split(' at ');
+        const location = (_b = lints.pop()) === null || _b === void 0 ? void 0 : _b.trim();
+        const lintMessage = lints.join(' at ').trim();
+        const [file, lineNumber, columnNumber] = location.split(':');
+        const lintName = lineData[2].replace(/[\W]+/g, '');
         const lintNameLowerCase = lintName.toLowerCase();
         let urls = [`https://dart.dev/tools/diagnostic-messages#${lintNameLowerCase}`];
         if (lintName === lintNameLowerCase) {
@@ -12642,7 +12640,7 @@ function analyze(params) {
         };
         const args = [ActionOptions_1.actionOptions.workingDirectory];
         try {
-            yield exec.exec('dart analyze --format machine', args, options);
+            yield exec.exec('dart analyze', args, options);
         }
         catch (_) {
             // dart analyze sometimes fails
@@ -12652,7 +12650,7 @@ function analyze(params) {
         let infoCount = 0;
         const lines = outputs.trim().split(/\r?\n/);
         const errLines = errOutputs.trim().split(/\r?\n/);
-        const delimiter = '|';
+        const delimiter = '-';
         console.log(`Output lines: ${lines.length}`);
         console.log(`Error Output lines: ${errLines.length}`);
         const parsedLines = [];
@@ -12667,7 +12665,7 @@ function analyze(params) {
                     line,
                     delimiter,
                 });
-                if (!ActionOptions_1.actionOptions.includeExternalChanges) {
+                if (!ActionOptions_1.actionOptions.includeUnchangedFiles) {
                     if (!params.modifiedFiles.has(parsedLine.file)) {
                         // Don't lint anything if the file is not part of the changes
                         continue;
@@ -13149,7 +13147,7 @@ class ActionOptions {
         this.checkRenamedFiles = core.getInput('check-renamed-files', { required: true }) === 'true';
         this.emojis = core.getInput('emojis', { required: true }) === 'true';
         this.format = core.getInput('format', { required: true }) === 'true';
-        this.includeExternalChanges = core.getInput('include-external-changes', { required: true }) === 'true';
+        this.includeUnchangedFiles = core.getInput('include-unchanged-files', { required: true }) === 'true';
         try {
             this.lineLength = parseInt(core.getInput('line-length', { required: true }));
         }
