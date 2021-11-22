@@ -27,6 +27,10 @@ Create a `.yml` file in `./github/workflows/` in your project.
   - Options: `'false'`, `'true'`.
   - Optional.
   - Default: `'false'`.
+- `include-unchanged-files`: If set to `'true'`, it will include existing, unchanged files in the analysis.
+  - Options: `'false'`, `'true'`. 
+  - Optional.
+  - Default: `'false'`.
 - `emojis`: `'false'` will remove the emojis from the comment.
   - Options: `'true'`, `'false'`.
   - Optional.
