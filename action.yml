@@ -21,7 +21,7 @@ inputs:
     description: "Whether it should check the renamed files with no changes. Options: `false`, `true`. Default: `false`."
     required: false
     default: "false"
-  include-external-changes:
+  include-unchanged-files:
     description: "Whether to include existing, unchanged files in the analysis. Options: `false`, `true`. Default: `false`."
     required: false
     default: "false"

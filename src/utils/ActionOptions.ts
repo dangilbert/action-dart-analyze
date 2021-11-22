@@ -12,7 +12,7 @@ class ActionOptions {
   public readonly checkRenamedFiles: boolean;
   public readonly emojis: boolean;
   public readonly format: boolean;
-  public readonly includeExternalChanges: boolean;
+  public readonly includeUnchangedFiles: boolean;
   public readonly lineLength: number | null;
   constructor() {
     this.failOn = FailOn.fromInput(core.getInput('fail-on', { required: true }));
@@ -21,7 +21,7 @@ class ActionOptions {
     this.checkRenamedFiles = core.getInput('check-renamed-files', { required: true }) === 'true';
     this.emojis = core.getInput('emojis', { required: true }) === 'true';
     this.format = core.getInput('format', { required: true }) === 'true';
-    this.includeExternalChanges = core.getInput('include-external-changes', { required: true }) === 'true';
+    this.includeUnchangedFiles = core.getInput('include-unchanged-files', { required: true }) === 'true';
     try {
       this.lineLength = parseInt(core.getInput('line-length', { required: true }));
     } catch (_) {

@@ -59,7 +59,7 @@ export async function analyze(params: { modifiedFiles: ModifiedFiles }): Promise
         line,
         delimiter,
       });
-      if (!actionOptions.includeExternalChanges) {
+      if (!actionOptions.includeUnchangedFiles) {
         if (!params.modifiedFiles.has(parsedLine.file)) {
           // Don't lint anything if the file is not part of the changes
           continue
