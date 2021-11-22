@@ -1,6 +1,6 @@
-name: "Dart Analyze"
-description: "Analyze a dart code"
-author: "Valentin Vignal"
+name: "Dart/Flutter Analyze"
+description: "Analyze/lint on Dart/Flutter code"
+author: "Dan Gilbert"
 branding:
   icon: "check-circle"
   color: "gray-dark"
