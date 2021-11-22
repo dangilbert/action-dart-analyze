@@ -14,11 +14,15 @@ inputs:
     default: ./
     required: false
   token:
-    description: "The github token."
-    required: false
+    description: "The github token. (Usually supplied in the github action)"
+    required: true
     default: ${{ github.token }}
   check-renamed-files:
     description: "Whether it should check the renamed files with no changes. Options: `false`, `true`. Default: `false`."
+    required: false
+    default: "false"
+  include-external-changes:
+    description: "Whether to include existing, unchanged files in the analysis. Options: `false`, `true`. Default: `false`."
     required: false
     default: "false"
   emojis:

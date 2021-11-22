@@ -43,25 +43,32 @@ export async function analyze(params: { modifiedFiles: ModifiedFiles }): Promise
   const errLines = errOutputs.trim().split(/\r?\n/);
   const delimiter = '-';
 
+  console.log(`Output lines: ${lines.length}`);
+  console.log(`Error Output lines: ${errLines.length}`);
+
   const parsedLines: ParsedLine[] = [];
 
   for (const line of [...lines, ...errLines]) {
+    console.log(`Checking ${line}`);
     if (!line.includes(delimiter)) {
       continue;
     }
+    console.log(`Includes delimiter ${delimiter}`);
     try {
       const parsedLine = new ParsedLine({
         line,
         delimiter,
       });
-      if (!params.modifiedFiles.has(parsedLine.file)) {
-        // Don't lint anything if the file is not part of the changes
-        continue
-      }
-      const modifiedFile = params.modifiedFiles.get(parsedLine.file)!;
-      if (!modifiedFile.hasAdditionLine(parsedLine.line)) {
-        // Don't lint if the issue doesn't belong to the additions
-        continue;
+      if (!actionOptions.includeExternalChanges) {
+        if (!params.modifiedFiles.has(parsedLine.file)) {
+          // Don't lint anything if the file is not part of the changes
+          continue
+        }
+        const modifiedFile = params.modifiedFiles.get(parsedLine.file)!;
+        if (!modifiedFile.hasAdditionLine(parsedLine.line)) {
+          // Don't lint if the issue doesn't belong to the additions
+          continue;
+        }
       }
 
       parsedLines.push(parsedLine);
