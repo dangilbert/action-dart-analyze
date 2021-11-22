@@ -43,17 +43,12 @@ export async function analyze(params: { modifiedFiles: ModifiedFiles }): Promise
   const errLines = errOutputs.trim().split(/\r?\n/);
   const delimiter = '|';
 
-  console.log(`Output lines: ${lines.length}`);
-  console.log(`Error Output lines: ${errLines.length}`);
-
   const parsedLines: ParsedLine[] = [];
 
   for (const line of [...lines, ...errLines]) {
-    console.log(`Checking ${line}`);
     if (!line.includes(delimiter)) {
       continue;
     }
-    console.log(`Includes delimiter ${delimiter}`);
     try {
       const parsedLine = new ParsedLine({
         line,
