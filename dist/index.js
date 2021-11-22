@@ -12476,9 +12476,9 @@ var DartAnalyzeLogTypeEnum;
 class DartAnalyzeLogType {
     static typeFromKey(key) {
         switch (key) {
-            case 'error':
+            case 'ERROR':
                 return DartAnalyzeLogTypeEnum.Error;
-            case 'warning':
+            case 'WARNING':
                 return DartAnalyzeLogTypeEnum.Warning;
             default:
                 return DartAnalyzeLogTypeEnum.Info;
@@ -12487,9 +12487,11 @@ class DartAnalyzeLogType {
     static keyFromType(logType) {
         switch (logType) {
             case DartAnalyzeLogTypeEnum.Error:
-                return 'error';
+                return 'ERROR';
+            case DartAnalyzeLogTypeEnum.Warning:
+                return 'WARNING';
             default:
-                return 'warning';
+                return 'INFO';
         }
     }
     static isFail(logType) {
@@ -12525,15 +12527,15 @@ const FailOn_1 = __nccwpck_require__(1613);
 const DartAnalyzeLogType_1 = __nccwpck_require__(5054);
 class ParsedLine {
     constructor(params) {
-        var _a, _b;
+        var _a;
         this.originalLine = params.line;
-        const lineData = params.line.split((_a = params === null || params === void 0 ? void 0 : params.delimiter) !== null && _a !== void 0 ? _a : '-');
+        const lineData = params.line.split((_a = params === null || params === void 0 ? void 0 : params.delimiter) !== null && _a !== void 0 ? _a : '|');
         this.type = DartAnalyzeLogType_1.DartAnalyzeLogType.typeFromKey(lineData[0].trim());
-        const lints = lineData[1].trim().split(' at ');
-        const location = (_b = lints.pop()) === null || _b === void 0 ? void 0 : _b.trim();
-        const lintMessage = lints.join(' at ').trim();
-        const [file, lineNumber, columnNumber] = location.split(':');
-        const lintName = lineData[2].replace(/[\W]+/g, '');
+        const lintMessage = lineData[7];
+        const file = lineData[3];
+        const lineNumber = lineData[4];
+        const columnNumber = lineData[5];
+        const lintName = lineData[2];
         const lintNameLowerCase = lintName.toLowerCase();
         let urls = [`https://dart.dev/tools/diagnostic-messages#${lintNameLowerCase}`];
         if (lintName === lintNameLowerCase) {
@@ -12640,7 +12642,7 @@ function analyze(params) {
         };
         const args = [ActionOptions_1.actionOptions.workingDirectory];
         try {
-            yield exec.exec('dart analyze', args, options);
+            yield exec.exec('dart analyze --format machine', args, options);
         }
         catch (_) {
             // dart analyze sometimes fails
@@ -12650,7 +12652,7 @@ function analyze(params) {
         let infoCount = 0;
         const lines = outputs.trim().split(/\r?\n/);
         const errLines = errOutputs.trim().split(/\r?\n/);
-        const delimiter = '-';
+        const delimiter = '|';
         console.log(`Output lines: ${lines.length}`);
         console.log(`Error Output lines: ${errLines.length}`);
         const parsedLines = [];
