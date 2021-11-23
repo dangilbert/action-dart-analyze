@@ -12448,7 +12448,8 @@ class AnalyzeResult {
                 failEmoji = `:${line.isFail ? 'x' : 'poop'}: `;
             }
             const highlight = line.isFail ? '**' : '';
-            comments.push(`- ${ActionOptions_1.actionOptions.emojis ? failEmoji + line.emoji + ' ' : ''}${highlight}${line.originalLine.trim().replace(line.file, `\`${line.file}\``)}.${highlight} See ${urls}.`);
+            const filename = line.file.replace(ActionOptions_1.actionOptions.workingDirectory, "");
+            comments.push(`- ${ActionOptions_1.actionOptions.emojis ? failEmoji + line.emoji + ' ' : ''}${highlight}${line.type} - ${line.message}${highlight} @ ${filename}:${line.line}:${line.column}. See ${urls}.`);
         }
         return comments.join('\n');
     }

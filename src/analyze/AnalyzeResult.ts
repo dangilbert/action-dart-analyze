@@ -38,7 +38,7 @@ class AnalyzeResultCounts {
           count += this.info;
         }
       }
-    } 
+    }
     return count;
   }
 }
@@ -58,7 +58,7 @@ export class AnalyzeResult {
 
   constructor(params: AnalyzeResultInterface) {
     this.counts = new AnalyzeResultCounts(params.counts);
-    this.lines =  params.lines;
+    this.lines = params.lines;
   }
 
   // Whether it is a success (not failing results)
@@ -86,8 +86,11 @@ export class AnalyzeResult {
       if (![FailOnEnum.Nothing, FailOnEnum.Format, FailOnEnum.Info].includes(actionOptions.failOn)) {
         failEmoji = `:${line.isFail ? 'x' : 'poop'}: `
       }
-      const highlight = line.isFail ? '**': '';
-      comments.push(`- ${actionOptions.emojis ? failEmoji + line.emoji + ' ' : ''}${highlight}${line.originalLine.trim().replace(line.file, `\`${line.file}\``)}.${highlight} See ${urls}.`);
+      const highlight = line.isFail ? '**' : '';
+
+      const filename = line.file.replace(actionOptions.workingDirectory, "");
+
+      comments.push(`- ${actionOptions.emojis ? failEmoji + line.emoji + ' ' : ''}${highlight}${line.type} - ${line.message}${highlight} @ ${filename}:${line.line}:${line.column}. See ${urls}.`);
     }
     return comments.join('\n');
   }
